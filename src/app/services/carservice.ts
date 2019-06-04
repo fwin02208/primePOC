@@ -13,4 +13,10 @@ export class CarService {
             .then(res => <Car[]> res.data)
             .then(data => data);
     }
+    // getCarsLarge() {
+    //     return this.http.get('/showcase/resources/data/cars-large.json')
+    //                 .toPromise()
+    //                 .then(res => <Car[]> res.json().data)
+    //                 .then(data => { return data; });
+    // }
 }

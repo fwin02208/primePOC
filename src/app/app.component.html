@@ -1,53 +1,96 @@
-<p-table #dt [columns]="selectedColumns" [value]="cars" selectionMode="multiple" [scrollable]="true"  [(selection)]="selectedCar" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="10">
- 
-    
-    <ng-template pTemplate="caption">
-            <div style="text-align:left">
-                    <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                selectedItemsLabel="{0} columns selected" [style]="{minWidth: '200px'}" defaultLabel="Choose Columns"></p-multiSelect>
-                </div>
-                <button type="button" pButton   label="advanced" (click)="open.toggle($event)"></button>
-                <p-overlayPanel #open> 
-            <input type="text" pInputText size="50" placeholder="advanced Filter"  style="width:auto" (keyup)="onKey($event)">
-            <button type="button" pButton    label="search" (click)="clickie(dt)"></button>
-
-                    </p-overlayPanel>
-
-        <div style="text-align: right">        
-            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-            <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-        </div>
-        <div class="ui-helper-clearfix">
-            <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="All Data" (click)="dt.exportCSV()" style="float:left"></button>
-            <!-- <p-overlayPanel #op> 
-              <div>
-                <div>
-                    <input pInputText type="text" placeholder="Ener vin" (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
-    <br>
-                   </div>
-                       
-                        <div >
-                         
-                            <i class="fa fa-close" (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="yearFilter"></i>
-                            <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="yearFilter" [min]="1970" [max]="2010" (onChange)="onYearChange($event, dt)"></p-slider>
-                       <br> </div>
-                        <div>
-                            <p-dropdown  [options]="brands" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
-    <br>
-                        </div>
-                        <div>
-                            <p-multiSelect [options]="colors" defaultLabel="All Colors" (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
-    
-                        </div>
-              </div>
-               
-          </p-overlayPanel> -->
+<p-dataView #dv [value]="cars" 
+[paginator]="true" [rows]="10"
+[sortField]="sortField" [sortOrder]="sortOrder" 
+filterBy="brand,vin,year,color" 
+ >
+        <p-header>List of Cars
+                <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By"
+                (onChange)="onSortChange($event)" [style]="{'min-width':'15em'}"></p-dropdown>
+                <button type="button" pButton label="advanced" (click)="open.toggle($event)"></button>
+        <p-overlayPanel #open>
+            <input type="text" pInputText size="50" placeholder="advanced Filter" style="width:auto"
+                (keyup)="onKey($event)">
+            <button type="button" pButton label="search" (click)="clickie(dv)"></button>
+ <br> <br>
+            <p-dropdown [options]="brands" [style]="{'width':'100%'}"
+            (onChange)="dv.filter($event.value)"></p-dropdown>
            
-            <button type="button" pButton icon="fa fa-file" iconPos="left" label="Selection Only" (click)="dt.exportCSV({selectionOnly:true})" style="float:right"></button>
+        </p-overlayPanel>
+                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+        </p-header>
+        <p-footer>Choose from the list.
+                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+        </p-footer>
+        <ng-template let-car pTemplate="listItem">
+            <div class="ui-g" style="padding: 2em;border-bottom: 1px solid #d9d9d9">
+                <!-- <div class="ui-g-12 ui-md-3" style="text-align:center">
+                    <img src="assets/showcase/images/demo/car/{{car.brand}}.png">
+                </div> -->
+                <div class="ui-g-12 ui-md-8 car-details">
+                    <div class="ui-g">
+                        <div class="ui-g-2 ui-sm-6">Vin: </div>
+                        <div class="ui-g-10 ui-sm-6"><b>{{car.vin}}</b></div>
+    
+                        <div class="ui-g-2 ui-sm-6">Year: </div>
+                        <div class="ui-g-10 ui-sm-6"><b>{{car.year}}</b></div>
+    
+                        <div class="ui-g-2 ui-sm-6">Brand: </div>
+                        <div class="ui-g-10 ui-sm-6"><b>{{car.brand}}</b></div>
+    
+                        <div class="ui-g-2 ui-sm-6">Color: </div>
+                        <div class="ui-g-10 ui-sm-6"><b>{{car.color}}</b></div>
+                    </div>
+                </div>
+                <!-- <div class="ui-g-12 ui-md-1 search-icon">
+                    <button pButton type="button" icon="pi pi-search" (click)="selectCar($event, car)"></button>
+                </div> -->
+            </div>
+        </ng-template>
+    <ng-template let-car pTemplate="gridItem">
+        <div style="padding:.5em" class="ui-g-12 ui-md-3">
+            <p-panel [header]="car.vin" [style]="{'text-align':'center'}">
+                <img src="assets/showcase/images/demo/car/{{car.brand}}.png" width="60">
+                <div class="car-detail">{{car.year}} - {{car.color}}</div>
+                <hr class="ui-widget-content" style="border-top:0">
+                <button pButton type="button" icon="pi pi-search" (click)="selectCar($event, car)" style="margin-top:0"></button>
+            </p-panel>
         </div>
     </ng-template>
-    
-    
+       
+</p-dataView>
+<!-- <p-table #dt [columns]="selectedColumns" [value]="cars" selectionMode="multiple" [scrollable]="true"
+    [(selection)]="selectedCar" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="10">
+
+
+    <ng-template pTemplate="caption">
+        <div style="text-align:left">
+            <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+                selectedItemsLabel="{0} columns selected" [style]="{minWidth: '200px'}" defaultLabel="Choose Columns">
+            </p-multiSelect>
+        </div>
+        <button type="button" pButton label="advanced" (click)="open.toggle($event)"></button>
+        <p-overlayPanel #open>
+            <input type="text" pInputText size="50" placeholder="advanced Filter" style="width:auto"
+                (keyup)="onKey($event)">
+            <button type="button" pButton label="search" (click)="clickie(dt)"></button>
+
+        </p-overlayPanel>
+
+        <div style="text-align: right">
+            <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+            <input type="text" pInputText size="50" placeholder="Global Filter"
+                (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+        <div class="ui-helper-clearfix">
+            <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="All Data" (click)="dt.exportCSV()"
+                style="float:left"></button>
+
+            <button type="button" pButton icon="fa fa-file" iconPos="left" label="Selection Only"
+                (click)="dt.exportCSV({selectionOnly:true})" style="float:right"></button>
+        </div>
+    </ng-template>
+
+
     <ng-template pTemplate="header" let-columns>
 
         <tr>
@@ -58,39 +101,51 @@
         <tr>
             <th *ngFor="let col of columns" [ngSwitch]="col.field">
 
-                <input *ngSwitchCase="'vin'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
+                <input *ngSwitchCase="'vin'" pInputText type="text"
+                    (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
                 <div *ngSwitchCase="'year'">
-                    Value < {{yearFilter}}
-                    <i class="fa fa-close" (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="yearFilter"></i>
-                    <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="yearFilter" [min]="1970" [max]="2010" (onChange)="onYearChange($event, dt)"></p-slider>
+                    Value < {{yearFilter}} <i class="fa fa-close"
+                        (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer"
+                        *ngIf="yearFilter"></i>
+                        <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="yearFilter" [min]="1970"
+                            [max]="2010" (onChange)="onYearChange($event, dt)"></p-slider>
                 </div>
-                <p-dropdown *ngSwitchCase="'brand'" [options]="brands" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
-                <p-multiSelect *ngSwitchCase="'color'" [options]="colors" defaultLabel="All Colors" (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
-                <button type="button" pButton   label="Filter" (click)="op.toggle($event)"></button>
-           
-             <p-overlayPanel #op> 
-              <div>
-                <div>
-                    <input pInputText type="text" placeholder="Ener vin" (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
-    <br>
-                   </div>
-                       
-                        <div >
-                         
-                            <i class="fa fa-close" (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="yearFilter"></i>
-                            <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="yearFilter" [min]="1970" [max]="2010" (onChange)="onYearChange($event, dt)"></p-slider>
-                       <br> </div>
+                <p-dropdown *ngSwitchCase="'brand'" [options]="brands" [style]="{'width':'100%'}"
+                    (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
+                <p-multiSelect *ngSwitchCase="'color'" [options]="colors" defaultLabel="All Colors"
+                    (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect> 
+                    &emsp; &emsp;   <button type="button" pButton label="Filter" *ngIf="col.header== 'Color'" (click)="op.toggle($event)"></button>
+
+                <p-overlayPanel #op>
+                    <div>
                         <div>
-                            <p-dropdown  [options]="brands" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
-    <br>
+                            <input pInputText type="text" placeholder="Ener vin"
+                                (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
+                            <br>
+                        </div>
+
+                        <div>
+
+                            <i class="fa fa-close"
+                                (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)"
+                                style="cursor:pointer" *ngIf="yearFilter"></i>
+                            <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="yearFilter"
+                                [min]="1970" [max]="2010" (onChange)="onYearChange($event, dt)"></p-slider>
+                            <br>
                         </div>
                         <div>
-                            <p-multiSelect [options]="colors" defaultLabel="All Colors" (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
-    
+                            <p-dropdown [options]="brands" [style]="{'width':'100%'}"
+                                (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
+                            <br>
                         </div>
-              </div>
-               
-          </p-overlayPanel>
+                        <div>
+                            <p-multiSelect [options]="colors" defaultLabel="All Colors"
+                                (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
+
+                        </div>
+                    </div>
+
+                </p-overlayPanel>
             </th>
         </tr>
     </ng-template>
@@ -109,17 +164,18 @@
     </ng-template>
 </p-table>
 
-<p-dialog header="Car Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [closable]="true" [width]="300">
+<p-dialog header="Car Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true"
+    [closable]="true" [width]="300">
     <div class="ui-g ui-fluid" *ngIf="car">
         <div class="ui-g-4"><label for="vin">Vin</label></div>
         <div class="ui-g-8"><input pInputText id="vin" [(ngModel)]="car.vin" /></div>
-        
+
         <div class="ui-g-4"><label for="year">Year</label></div>
         <div class="ui-g-8"><input pInputText id="year" [(ngModel)]="car.year" /></div>
-        
+
         <div class="ui-g-4"><label for="brand">Brand</label></div>
         <div class="ui-g-8"><input pInputText id="brand" [(ngModel)]="car.brand" /></div>
-        
+
         <div class="ui-g-4"><label for="color">Color</label></div>
         <div class="ui-g-8"><input pInputText id="color" [(ngModel)]="car.color" /></div>
     </div>
@@ -129,4 +185,4 @@
             <button type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
         </div>
     </p-footer>
-</p-dialog>
+</p-dialog> -->

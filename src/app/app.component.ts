@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Car } from './domain/car';
 import { CarService } from './services/carservice';
+import { stringify } from 'querystring';
 
 export class PrimeCar implements Car {
-    constructor(public vin?, public year?, public brand?, public color?) {}
+    constructor(public vin?, public year?, public brand?, public color?) { }
 }
 
 @Component({
@@ -32,16 +33,35 @@ export class AppComponent implements OnInit {
 
     cols: any[];
 
-    yearFilter: number;
+    yearFilter: number=1970;
 
     yearTimeout: any;
     selectedColumns: any[];
     searchtext: any;
+    cap: Car[];
+
+    sortOptions: SelectItem[];
+
+    sortKey: string;
+
+    sortField: string;
+
+    sortOrder: number;
 
     constructor(private carService: CarService) { }
 
     ngOnInit() {
-        this.carService.getCarsSmall().then(cars => this.cars = cars);
+        this.sortOptions = [
+            {label: 'Newest First', value: '!year'},
+            {label: 'Oldest First', value: 'year'},
+            {label: 'Brand', value: 'brand'}
+        ];
+        this.carService.getCarsSmall().then(cars => {
+            this.cars = cars
+            this.cap=this.cars
+            
+            console.log(this.cars)}
+            );
 
         this.brands = [
             { label: 'All Brands', value: null },
@@ -72,30 +92,38 @@ export class AppComponent implements OnInit {
             { field: 'year', header: 'Year' },
             { field: 'brand', header: 'Brand' },
             { field: 'color', header: 'Color' },
-           
+
         ];
         this.selectedColumns = this.cols;
     }
-    onYearChange(event, dt) {
+    onSortChange(event) {
+        let value = event.value;
+
+        if (value.indexOf('!') === 0) {
+            this.sortOrder = -1;
+            this.sortField = value.substring(1, value.length);
+        }
+        else {
+            this.sortOrder = 1;
+            this.sortField = value;
+        }
+    }
+    onYearChange(event, dv) {
         if (this.yearTimeout) {
             clearTimeout(this.yearTimeout);
         }
-
+console.log("event.value",event.value);
+let abc=stringify(event.value)
         this.yearTimeout = setTimeout(() => {
-            dt.filter(event.value, 'year', 'gt');
+            dv.filter(abc);
         }, 250);
     }
-    onKey(event){
-console.log("event", event.target.value);
-this.searchtext=event.target.value
+    onKey(event) {
+        console.log("event", event.target.value);
+        this.searchtext = event.target.value
     }
-    clickie(dt){
-     
-        
-        let abc=  dt.filterGlobal(this.searchtext, 'contains')
-   
-    console.log("abc",abc);
-    
+    clickie(dv) {
+        dv.filter(this.searchtext)
     }
 
     showDialogToAdd() {
@@ -125,7 +153,7 @@ this.searchtext=event.target.value
 
     onRowSelect(event) {
         this.newCar = false;
-        this.car = {...event.data};
+        this.car = { ...event.data };
         this.displayDialog = true;
     }
 
@@ -140,4 +168,10 @@ export interface SelectItem {
     icon?: string;
     title?: string;
     disabled?: boolean;
+}
+export interface Car {
+    vin;
+    year;
+    brand;
+    color;
 }

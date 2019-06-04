@@ -11,6 +11,9 @@ import {SliderModule  } from "primeng/slider";
 import { DropdownModule } from "primeng/dropdown";
 import { MultiSelectModule } from "primeng/multiselect";
 import {OverlayPanelModule} from 'primeng/overlaypanel';
+import {DataViewModule} from 'primeng/dataview';
+import {PanelModule} from 'primeng/panel';
+
 
 import { AppComponent } from './app.component';
 
@@ -27,7 +30,8 @@ import { AppComponent } from './app.component';
         InputTextModule,
         DialogModule,
         ButtonModule,
-        SliderModule,DropdownModule,MultiSelectModule,OverlayPanelModule
+        DataViewModule,
+        SliderModule,DropdownModule,MultiSelectModule,OverlayPanelModule,PanelModule
     ],
     providers: [],
     bootstrap: [AppComponent]
