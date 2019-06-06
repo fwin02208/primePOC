@@ -1,4 +1,4 @@
-<p-dataView #dv [value]="cars" 
+<!-- <p-dataView #dv [value]="cars" 
 [paginator]="true" [rows]="10"
 [sortField]="sortField" [sortOrder]="sortOrder" 
 filterBy="brand,vin,year,color" 
@@ -23,9 +23,7 @@ filterBy="brand,vin,year,color"
         </p-footer>
         <ng-template let-car pTemplate="listItem">
             <div class="ui-g" style="padding: 2em;border-bottom: 1px solid #d9d9d9">
-                <!-- <div class="ui-g-12 ui-md-3" style="text-align:center">
-                    <img src="assets/showcase/images/demo/car/{{car.brand}}.png">
-                </div> -->
+              
                 <div class="ui-g-12 ui-md-8 car-details">
                     <div class="ui-g">
                         <div class="ui-g-2 ui-sm-6">Vin: </div>
@@ -41,9 +39,7 @@ filterBy="brand,vin,year,color"
                         <div class="ui-g-10 ui-sm-6"><b>{{car.color}}</b></div>
                     </div>
                 </div>
-                <!-- <div class="ui-g-12 ui-md-1 search-icon">
-                    <button pButton type="button" icon="pi pi-search" (click)="selectCar($event, car)"></button>
-                </div> -->
+              
             </div>
         </ng-template>
     <ng-template let-car pTemplate="gridItem">
@@ -57,8 +53,8 @@ filterBy="brand,vin,year,color"
         </div>
     </ng-template>
        
-</p-dataView>
-<!-- <p-table #dt [columns]="selectedColumns" [value]="cars" selectionMode="multiple" [scrollable]="true"
+</p-dataView> -->
+ <p-table #dt [columns]="selectedColumns" [value]="cars" selectionMode="multiple" [scrollable]="true"
     [(selection)]="selectedCar" (onRowSelect)="onRowSelect($event)" [paginator]="true" rows="10">
 
 
@@ -94,37 +90,29 @@ filterBy="brand,vin,year,color"
     <ng-template pTemplate="header" let-columns>
 
         <tr>
-            <th *ngFor="let col of columns let i=index">
+            <th *ngFor="let col of columns let i=index" [pSortableColumn]="col.field">
                 {{col.header}}
+                <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
             </th>
+            
         </tr>
         <tr>
             <th *ngFor="let col of columns" [ngSwitch]="col.field">
 
                 <input *ngSwitchCase="'vin'" pInputText type="text"
                     (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
-                <div *ngSwitchCase="'year'">
-                    Value < {{yearFilter}} <i class="fa fa-close"
-                        (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer"
-                        *ngIf="yearFilter"></i>
-                        <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="yearFilter" [min]="1970"
-                            [max]="2010" (onChange)="onYearChange($event, dt)"></p-slider>
-                </div>
-                <p-dropdown *ngSwitchCase="'brand'" [options]="brands" [style]="{'width':'100%'}"
-                    (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
-                <p-multiSelect *ngSwitchCase="'color'" [options]="colors" defaultLabel="All Colors"
-                    (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect> 
-                    &emsp; &emsp;   <button type="button" pButton label="Filter" *ngIf="col.header== 'Color'" (click)="op.toggle($event)"></button>
-
+                    <input *ngSwitchCase="'year'" pInputText type="text"
+                    (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
+                    <input *ngSwitchCase="'brand'" pInputText type="text"
+                    (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
+                    <input *ngSwitchCase="'color'" pInputText type="text"
+                    (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
+           
+                    <button type="button"  pButton label="Filter" (click)="op.toggle($event)"></button>
                 <p-overlayPanel #op>
                     <div>
-                        <div>
-                            <input pInputText type="text" placeholder="Ener vin"
-                                (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
-                            <br>
-                        </div>
-
-                        <div>
+                       
+                        <!-- <div>
 
                             <i class="fa fa-close"
                                 (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)"
@@ -132,15 +120,15 @@ filterBy="brand,vin,year,color"
                             <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="yearFilter"
                                 [min]="1970" [max]="2010" (onChange)="onYearChange($event, dt)"></p-slider>
                             <br>
-                        </div>
+                        </div> -->
                         <div>
-                            <p-dropdown [options]="brands" [style]="{'width':'100%'}"
-                                (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
+                            <p-dropdown [options]="brands" [style]="{'width':'100%'}" [(ngModel)]="brand"
+                                (onChange)="dt.filter($event.value, 'brand', 'equals')"></p-dropdown>
                             <br>
                         </div>
                         <div>
-                            <p-multiSelect [options]="colors" defaultLabel="All Colors"
-                                (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
+                            <p-multiSelect [options]="colors" defaultLabel="All Colors"  [(ngModel)]="color"
+                                (onChange)="dt.filter($event.value, 'color', 'in')"></p-multiSelect>
 
                         </div>
                     </div>
@@ -185,4 +173,4 @@ filterBy="brand,vin,year,color"
             <button type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
         </div>
     </p-footer>
-</p-dialog> -->
+</p-dialog>

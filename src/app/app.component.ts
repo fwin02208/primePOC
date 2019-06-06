@@ -108,6 +108,8 @@ export class AppComponent implements OnInit {
             this.sortField = value;
         }
     }
+    brand;
+    color
     onYearChange(event, dv) {
         if (this.yearTimeout) {
             clearTimeout(this.yearTimeout);
@@ -125,7 +127,10 @@ let abc=stringify(event.value)
     clickie(dv) {
         dv.filter(this.searchtext)
     }
-
+click(a){
+    console.log(a);
+    
+}
     showDialogToAdd() {
         this.newCar = true;
         this.car = new PrimeCar();
